@@ -29,7 +29,7 @@ var storageHostname string = os.Getenv("FOSSUL_STORAGE_CLIENT_HOSTNAME")
 var storagePort string = os.Getenv("FOSSUL_STORAGE_CLIENT_PORT")
 var debug string = os.Getenv("FOSSUL_SERVER_DEBUG")
 
-func Workflow(ctx workflow.Context, config util.Config) (string, error) {
+func Workflow(ctx workflow.Context, config util.Config) (util.Result, error) {
 	retryPolicy := &temporal.RetryPolicy{
 		MaximumAttempts:        3,
 		InitialInterval:        time.Second,
@@ -47,25 +47,27 @@ func Workflow(ctx workflow.Context, config util.Config) (string, error) {
 	logger := workflow.GetLogger(ctx)
 	logger.Info("Fossul backup workflow started")
 
-	var result string
+	var result util.Result
+	//var result string
+	//err := workflow.ExecuteActivity(ctx, BackupCreateCmdActivity, config).Get(ctx, &result)
 	err := workflow.ExecuteActivity(ctx, BackupCreateCmdActivity, config).Get(ctx, &result)
 	if err != nil {
-		return "Backup workflow failed", err
+		return result, err
 	}
 
 	logger.Info("Backup workflow completed.", "result", result)
 
-	return "Backup workflow completed successfully", nil
+	return result, nil
 }
 
-func BackupCreateCmdActivity(ctx context.Context, config util.Config) (string, error) {
+func BackupCreateCmdActivity(ctx context.Context, config util.Config) (util.Result, error) {
 	auth := SetAuth()
-
+	var result util.Result
 	logger := activity.GetLogger(ctx)
 	if config.BackupCreateCmd != "" {
 		result, err := client.BackupCreateCmd(auth, config)
 		if err != nil {
-			return "Backup create command error", err
+			return result, err
 
 		}
 
@@ -73,10 +75,10 @@ func BackupCreateCmdActivity(ctx context.Context, config util.Config) (string, e
 			logger.Info(msg.Message)
 		}
 
-		return "Backup create command successful", nil
+		return result, nil
 	}
 
-	return "Backup create command skipped", nil
+	return result, nil
 }
 
 func SetAuth() client.Auth {

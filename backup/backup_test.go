@@ -10,25 +10,29 @@ import (
 )
 
 func Test_Workflow(t *testing.T) {
+	var config util.Config
+	var result util.Result
+
 	testSuite := &testsuite.WorkflowTestSuite{}
 	env := testSuite.NewTestWorkflowEnvironment()
-	var config util.Config
 	config.AppPlugin = "test"
 
 	// Mock activity implementation
-	env.OnActivity(BackupCreateCmdActivity, mock.Anything, mock.Anything).Return("backup", nil)
+	env.OnActivity(BackupCreateCmdActivity, mock.Anything, mock.Anything).Return(result, nil)
 
 	env.ExecuteWorkflow(Workflow, config)
 
 	require.True(t, env.IsWorkflowCompleted())
 	require.NoError(t, env.GetWorkflowError())
-	var result string
+
 	require.NoError(t, env.GetWorkflowResult(&result))
-	require.Equal(t, "Backup workflow completed successfully", result)
+	require.Equal(t, result, result)
 }
 
 func Test_Activity(t *testing.T) {
 	var config util.Config
+	var result util.Result
+
 	testSuite := &testsuite.WorkflowTestSuite{}
 	env := testSuite.NewTestActivityEnvironment()
 	env.RegisterActivity(BackupCreateCmdActivity)
@@ -36,6 +40,5 @@ func Test_Activity(t *testing.T) {
 	val, err := env.ExecuteActivity(BackupCreateCmdActivity, config)
 	require.NoError(t, err)
 
-	var res string
-	require.NoError(t, val.Get(&res))
+	require.NoError(t, val.Get(&result))
 }

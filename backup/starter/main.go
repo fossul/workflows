@@ -43,7 +43,7 @@ func main() {
 
 	fmt.Println("test ", we)
 	// Synchronously wait for the workflow completion.
-	var result string
+	var result util.Result
 	err = we.Get(context.Background(), &result)
 	if err != nil {
 		log.Fatalln("Unable get workflow result", err)
