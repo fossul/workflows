@@ -160,3 +160,13 @@ The Fossul workflow result which contains a list of steps, state and logging for
 ]
 ```
 
+## Testing
+### Build worker service
+```$ scripts/fossul-backup-worker-build.sh```
+
+### Start worker service
+```$ $GOBIN/fossul-backup-worker-startup.sh```
+
+### Run workflow starter
+```$ go run github.com/fossul/workflows/backup/starter```
+
