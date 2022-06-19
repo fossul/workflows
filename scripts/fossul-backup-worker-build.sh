@@ -4,7 +4,7 @@ echo "Installing Dependencies"
 go mod tidy
 
 echo "Running Unit Tests"
-go test github.com/fossul/workflows/backup
+go test -v github.com/fossul/workflows/backup
 if [ $? != 0 ]; then exit 1; fi
 
 echo "Building Backup Worker"

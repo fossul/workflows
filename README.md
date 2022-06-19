@@ -14,7 +14,7 @@ Fossul has two workflow types today, backup and restore. The workflow and it's a
 
 The Fossul workflow result which contains a list of steps, state and logging for each workflow is implemented inside the worker and persisted by Temporal. This means we likely no longer need to serialize that data and can now just query Temporal.
 
-## Sample Fossul Workflow Output
+## Sample Fossul Workflow Output Through Temporal
 ```
 [
   {
