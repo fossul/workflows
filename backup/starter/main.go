@@ -32,9 +32,20 @@ func main() {
 	}
 
 	var config util.Config
+	workflowStatus := &util.Workflow{}
+	workflowStatus.Id = util.GetWorkflowId()
+	workflowStatus.Type = "temporal"
+	workflowStatus.Policy = "daily"
+	workflowStatus.Status = "RUNNING"
+
 	config.AccessWithinCluster = "false"
+	config.PreAppQuiesceCmd = "echo,pre quiesce command"
+	config.PostAppQuiesceCmd = "echo,post quiesce command"
 	config.BackupCreateCmd = "echo,backup create command"
-	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, backup.Workflow, config)
+	config.PreAppUnquiesceCmd = "echo,pre app unquiesce command"
+	config.PostAppUnquiesceCmd = "echo,post app unquiesce command"
+
+	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, backup.Workflow, config, workflowStatus)
 	if err != nil {
 		log.Fatalln("Unable to execute workflow", err)
 	}
@@ -43,10 +54,10 @@ func main() {
 
 	fmt.Println("test ", we)
 	// Synchronously wait for the workflow completion.
-	var result util.Result
-	err = we.Get(context.Background(), &result)
+	var workflowStatusResult util.WorkflowStatusResult
+	err = we.Get(context.Background(), &workflowStatusResult)
 	if err != nil {
 		log.Fatalln("Unable get workflow result", err)
 	}
-	log.Println("Workflow result:", result)
+	log.Println("Workflow result:", workflowStatusResult)
 }

@@ -28,7 +28,14 @@ func main() {
 	w := worker.New(c, "fossul_backup", worker.Options{})
 
 	w.RegisterWorkflow(backup.Workflow)
+	w.RegisterActivity(backup.PreAppQuiesceCmdActivity)
+	w.RegisterActivity(backup.AppQuiesceActivity)
+	w.RegisterActivity(backup.PostAppQuiesceCmdActivity)
 	w.RegisterActivity(backup.BackupCreateCmdActivity)
+	w.RegisterActivity(backup.BackupCreateActivity)
+	w.RegisterActivity(backup.PreAppUnQuiesceCmdActivity)
+	w.RegisterActivity(backup.AppUnQuiesceActivity)
+	w.RegisterActivity(backup.PostAppUnQuiesceCmdActivity)
 
 	err = w.Run(worker.InterruptCh())
 	if err != nil {
