@@ -7,6 +7,7 @@ import (
 	"go.temporal.io/sdk/worker"
 
 	backup "github.com/fossul/workflows/backup"
+	restore "github.com/fossul/workflows/restore"
 )
 
 const (
@@ -25,7 +26,7 @@ func main() {
 	}
 	defer c.Close()
 
-	w := worker.New(c, "fossul_backup", worker.Options{})
+	w := worker.New(c, "fossul", worker.Options{})
 
 	w.RegisterWorkflow(backup.Workflow)
 	w.RegisterActivity(backup.PreAppQuiesceCmdActivity)
@@ -36,6 +37,14 @@ func main() {
 	w.RegisterActivity(backup.PreAppUnQuiesceCmdActivity)
 	w.RegisterActivity(backup.AppUnQuiesceActivity)
 	w.RegisterActivity(backup.PostAppUnQuiesceCmdActivity)
+
+	w.RegisterWorkflow(restore.RestoreWorkflow)
+	w.RegisterActivity(restore.PreRestoreCmdActivity)
+	w.RegisterActivity(restore.PreRestoreActivity)
+	w.RegisterActivity(restore.RestoreCmdActivity)
+	w.RegisterActivity(restore.RestoreActivity)
+	w.RegisterActivity(restore.PostAppRestoreCmdActivity)
+	w.RegisterActivity(restore.PostRestoreActivity)
 
 	err = w.Run(worker.InterruptCh())
 	if err != nil {

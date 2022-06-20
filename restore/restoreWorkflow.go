@@ -1,4 +1,4 @@
-package backup
+package restore
 
 import (
 	"time"
@@ -12,12 +12,12 @@ import (
 	_ "go.temporal.io/sdk/contrib/tools/workflowcheck/determinism"
 )
 
-func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Workflow) (util.WorkflowStatusResult, error) {
+func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *util.Workflow) (util.WorkflowStatusResult, error) {
 	retryPolicy := &temporal.RetryPolicy{
-		MaximumAttempts:        1,
-		InitialInterval:        time.Second * 5,
+		MaximumAttempts:        3,
+		InitialInterval:        time.Second,
 		MaximumInterval:        time.Second * 10,
-		BackoffCoefficient:     1,
+		BackoffCoefficient:     2,
 		NonRetryableErrorTypes: []string{"bad-bug"},
 	}
 
@@ -28,15 +28,15 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 	ctx = workflow.WithActivityOptions(ctx, ao)
 
 	logger := workflow.GetLogger(ctx)
-	logger.Info("Fossul backup workflow started")
+	logger.Info("Fossul restore workflow started")
 
 	var result util.Result
 	var messages []util.Message
 	var workflowStatusResult util.WorkflowStatusResult
 
-	// PreAppQuiesceCmdActivity
-	if config.PreAppQuiesceCmd != "" {
-		err := workflow.ExecuteActivity(ctx, PreAppQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
+	// PreRestoreCmdActivity
+	if config.PreAppRestoreCmd != "" {
+		err := workflow.ExecuteActivity(ctx, PreRestoreCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
 		util.SetStepComplete(workflowStatus, step)
@@ -47,9 +47,9 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		}
 	}
 
-	// AppQuiesceActivity
+	// PreRestoreActivity
 	if config.AppPlugin != "" {
-		err := workflow.ExecuteActivity(ctx, AppQuiesceActivity, config, workflowStatus).Get(ctx, &result)
+		err := workflow.ExecuteActivity(ctx, PreRestoreActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
 		util.SetStepComplete(workflowStatus, step)
@@ -60,9 +60,9 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		}
 	}
 
-	// PostAppQuiesceCmdActivity
-	if config.PostAppQuiesceCmd != "" {
-		err := workflow.ExecuteActivity(ctx, PostAppQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
+	// RestoreCmdActivity
+	if config.RestoreCmd != "" {
+		err := workflow.ExecuteActivity(ctx, RestoreCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
 		util.SetStepComplete(workflowStatus, step)
@@ -73,22 +73,9 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		}
 	}
 
-	// BackupCreateCmdActivity
-	if config.BackupCreateCmd != "" {
-		err := workflow.ExecuteActivity(ctx, BackupCreateCmdActivity, config, workflowStatus).Get(ctx, &result)
-		step := fossul.StepInit(workflowStatus)
-		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
-
-		if err != nil {
-			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
-			return workflowStatusResult, err
-		}
-	}
-
-	// BackupCreateActivity
+	// RestoreActivity
 	if config.StoragePlugin != "" {
-		err := workflow.ExecuteActivity(ctx, BackupCreateActivity, config, workflowStatus).Get(ctx, &result)
+		err := workflow.ExecuteActivity(ctx, RestoreActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
 		util.SetStepComplete(workflowStatus, step)
@@ -99,9 +86,9 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		}
 	}
 
-	// PreAppUnQuiesceCmdActivity
-	if config.PreAppUnquiesceCmd != "" {
-		err := workflow.ExecuteActivity(ctx, PreAppUnQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
+	// PostAppRestoreCmdActivity
+	if config.PostAppRestoreCmd != "" {
+		err := workflow.ExecuteActivity(ctx, PostAppRestoreCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
 		util.SetStepComplete(workflowStatus, step)
@@ -112,22 +99,9 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		}
 	}
 
-	// AppUnQuiesceActivity
+	// PostRestoreActivity
 	if config.AppPlugin != "" {
-		err := workflow.ExecuteActivity(ctx, AppUnQuiesceActivity, config, workflowStatus).Get(ctx, &result)
-		step := fossul.StepInit(workflowStatus)
-		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
-
-		if err != nil {
-			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
-			return workflowStatusResult, err
-		}
-	}
-
-	// PostAppUnQuiesceCmdActivity
-	if config.PreAppUnquiesceCmd != "" {
-		err := workflow.ExecuteActivity(ctx, PostAppUnQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
+		err := workflow.ExecuteActivity(ctx, PostRestoreActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
 		util.SetStepComplete(workflowStatus, step)
@@ -143,7 +117,7 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 	result.Messages = messages
 	workflowStatusResult.Result = result
 
-	logger.Info("Backup workflow completed.", "result", workflowStatusResult)
+	logger.Info("Restore workflow completed.", "result", workflowStatusResult)
 
 	return workflowStatusResult, nil
 }

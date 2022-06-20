@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"github.com/fossul/fossul/src/engine/util"
-	"github.com/fossul/workflows/backup"
+	"github.com/fossul/workflows/restore"
 	"go.temporal.io/sdk/client"
 )
 
@@ -39,13 +39,11 @@ func main() {
 	workflowStatus.Status = "RUNNING"
 
 	config.AccessWithinCluster = "false"
-	config.PreAppQuiesceCmd = "echo,pre quiesce command"
-	config.PostAppQuiesceCmd = "echo,post quiesce command"
-	config.BackupCreateCmd = "echo,backup create command"
-	config.PreAppUnquiesceCmd = "echo,pre app unquiesce command"
-	config.PostAppUnquiesceCmd = "echo,post app unquiesce command"
+	config.PreAppRestoreCmd = "echo,pre app restore command"
+	config.PostAppRestoreCmd = "echo,post app restore command"
+	config.RestoreCmd = "echo,restore command"
 
-	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, backup.Workflow, config, workflowStatus)
+	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, restore.RestoreWorkflow, config, workflowStatus)
 	if err != nil {
 		log.Fatalln("Unable to execute workflow", err)
 	}

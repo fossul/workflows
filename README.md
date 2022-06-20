@@ -14,152 +14,6 @@ Fossul has two workflow types today, backup and restore. The workflow and it's a
 
 The Fossul workflow result which contains a list of steps, state and logging for each workflow is implemented inside the worker and persisted by Temporal. This means we likely no longer need to serialize that data and can now just query Temporal.
 
-## Sample Fossul Workflow Output Through Temporal
-```
-[
-  {
-    "workflow": {
-      "id": 1383,
-      "status": "COMPLETED",
-      "type": "temporal",
-      "policy": "daily",
-      "steps": [
-        {
-          "id": 0,
-          "status": "COMPLETE",
-          "label": "Step 0"
-        },
-        {
-          "id": 1,
-          "status": "COMPLETE",
-          "label": "Step 1"
-        },
-        {
-          "id": 2,
-          "status": "COMPLETE",
-          "label": "Step 2"
-        },
-        {
-          "id": 3,
-          "status": "COMPLETE",
-          "label": "Step 3"
-        },
-        {
-          "id": 4,
-          "status": "COMPLETE",
-          "label": "Step 4"
-        }
-      ]
-    },
-    "result": {
-      "messages": [
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Performing post unquiesce command [echo,post app unquiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "CMD",
-          "message": "Executing command [echo post app unquiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "post app unquiesce command\n"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Command [echo post app unquiesce command] completed successfully"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Performing post quiesce command [echo,post quiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "CMD",
-          "message": "Executing command [echo post quiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "post quiesce command\n"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Command [echo post quiesce command] completed successfully"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Performing backup create command [echo,backup create command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "CMD",
-          "message": "Executing command [echo backup create command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "backup create command\n"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Command [echo backup create command] completed successfully"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Performing pre unquiesce command [echo,pre app unquiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "CMD",
-          "message": "Executing command [echo pre app unquiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "pre app unquiesce command\n"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Command [echo pre app unquiesce command] completed successfully"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Performing post unquiesce command [echo,post app unquiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "CMD",
-          "message": "Executing command [echo post app unquiesce command]"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "post app unquiesce command\n"
-        },
-        {
-          "time": 1655609847,
-          "level": "INFO",
-          "message": "Command [echo post app unquiesce command] completed successfully"
-        }
-      ],
-      "backup": {}
-    }
-  }
-]
-```
-
 ## Testing
 ### Build worker service
 ```$ scripts/fossul-backup-worker-build.sh```
@@ -167,6 +21,9 @@ The Fossul workflow result which contains a list of steps, state and logging for
 ### Start worker service
 ```$ $GOBIN/fossul-backup-worker-startup.sh```
 
-### Run workflow starter
+### Run backup workflow starter
 ```$ go run github.com/fossul/workflows/backup/starter```
+
+### Run restore workflow starter
+```$ go run github.com/fossul/workflows/restore/starter```
 

@@ -60,4 +60,4 @@ if [[ -z "${FOSSUL_SERVER_DEBUG}" ]]; then
     export FOSSUL_SERVER_DEBUG=$DEBUG
 fi
 
-$GOBIN/backupWorker
+$GOBIN/worker
