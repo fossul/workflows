@@ -39,12 +39,14 @@ func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *u
 		err := workflow.ExecuteActivity(ctx, PreRestoreCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// PreRestoreActivity
@@ -52,12 +54,14 @@ func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *u
 		err := workflow.ExecuteActivity(ctx, PreRestoreActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// RestoreCmdActivity
@@ -65,12 +69,14 @@ func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *u
 		err := workflow.ExecuteActivity(ctx, RestoreCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// RestoreActivity
@@ -78,12 +84,14 @@ func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *u
 		err := workflow.ExecuteActivity(ctx, RestoreActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// PostAppRestoreCmdActivity
@@ -91,12 +99,14 @@ func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *u
 		err := workflow.ExecuteActivity(ctx, PostAppRestoreCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// PostRestoreActivity
@@ -104,12 +114,14 @@ func RestoreWorkflow(ctx workflow.Context, config util.Config, workflowStatus *u
 		err := workflow.ExecuteActivity(ctx, PostRestoreActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	util.SetWorkflowStatusEnd(workflowStatus)

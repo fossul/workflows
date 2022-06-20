@@ -39,11 +39,13 @@ func main() {
 	workflowStatus.Status = "RUNNING"
 
 	config.AccessWithinCluster = "false"
-	config.PreAppQuiesceCmd = "echo,pre quiesce command"
-	config.PostAppQuiesceCmd = "echo,post quiesce command"
-	config.BackupCreateCmd = "echo,backup create command"
-	config.PreAppUnquiesceCmd = "echo,pre app unquiesce command"
-	config.PostAppUnquiesceCmd = "echo,post app unquiesce command"
+	config.AppPlugin = "sample-app.so"
+	config.StoragePlugin = "sample-storage.so"
+	//config.PreAppQuiesceCmd = "echo,pre quiesce command"
+	//config.PostAppQuiesceCmd = "echo,post quiesce command"
+	//config.BackupCreateCmd = "echo,backup create command"
+	//config.PreAppUnquiesceCmd = "echo,pre app unquiesce command"
+	//config.PostAppUnquiesceCmd = "echo,post app unquiesce command"
 
 	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, backup.Workflow, config, workflowStatus)
 	if err != nil {

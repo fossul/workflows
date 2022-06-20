@@ -7,7 +7,7 @@ echo "Running Unit Tests"
 go test -v github.com/fossul/workflows/backup
 if [ $? != 0 ]; then exit 1; fi
 
-echo "Building Backup Worker"
+echo "Building Fossul Worker"
 go install github.com/fossul/workflows/worker
 if [ $? != 0 ]; then exit 1; fi
 
@@ -17,5 +17,5 @@ if [[ ! -z "${GOBIN}" ]]; then
 	if [ $? != 0 ]; then exit 1; fi
 fi
 
-echo "Backup worker build completed successfully"
+echo "Fossul worker build completed successfully"
 

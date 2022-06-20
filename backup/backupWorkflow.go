@@ -39,12 +39,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, PreAppQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// AppQuiesceActivity
@@ -52,12 +54,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, AppQuiesceActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// PostAppQuiesceCmdActivity
@@ -65,12 +69,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, PostAppQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// BackupCreateCmdActivity
@@ -78,12 +84,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, BackupCreateCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// BackupCreateActivity
@@ -91,12 +99,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, BackupCreateActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// PreAppUnQuiesceCmdActivity
@@ -104,12 +114,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, PreAppUnQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// AppUnQuiesceActivity
@@ -117,12 +129,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, AppUnQuiesceActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	// PostAppUnQuiesceCmdActivity
@@ -130,12 +144,14 @@ func Workflow(ctx workflow.Context, config util.Config, workflowStatus *util.Wor
 		err := workflow.ExecuteActivity(ctx, PostAppUnQuiesceCmdActivity, config, workflowStatus).Get(ctx, &result)
 		step := fossul.StepInit(workflowStatus)
 		messages = fossul.AppendMessages(result.Messages, messages)
-		util.SetStepComplete(workflowStatus, step)
 
-		if err != nil {
+		if result.Code != 0 {
+			util.SetStepError(workflowStatus, step)
 			workflowStatusResult = fossul.ErrorHandling(messages, result, workflowStatus, workflowStatusResult)
 			return workflowStatusResult, err
 		}
+
+		util.SetStepComplete(workflowStatus, step)
 	}
 
 	util.SetWorkflowStatusEnd(workflowStatus)

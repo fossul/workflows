@@ -1,7 +1,7 @@
 [
   {
     "workflow": {
-      "id": 512,
+      "id": 9354,
       "status": "COMPLETE",
       "type": "temporal",
       "policy": "daily",
@@ -26,19 +26,19 @@
     "result": {
       "messages": [
         {
-          "time": 1655748132,
+          "time": 1655748368,
           "level": "INFO",
-          "message": "*** Application Quiesce ***"
+          "message": "*** Application PreRestore ***"
         },
         {
-          "time": 1655748132,
+          "time": 1655748368,
           "level": "INFO",
-          "message": "*** Backup ***"
+          "message": "*** Restore ***"
         },
         {
-          "time": 1655748132,
+          "time": 1655748368,
           "level": "INFO",
-          "message": "*** Application Unquiesce ***"
+          "message": "*** Application PostRestore ***"
         }
       ],
       "backup": {}

@@ -39,9 +39,11 @@ func main() {
 	workflowStatus.Status = "RUNNING"
 
 	config.AccessWithinCluster = "false"
-	config.PreAppRestoreCmd = "echo,pre app restore command"
-	config.PostAppRestoreCmd = "echo,post app restore command"
-	config.RestoreCmd = "echo,restore command"
+	config.AppPlugin = "sample-app.so"
+	config.StoragePlugin = "sample-storage.so"
+	//config.PreAppRestoreCmd = "echo,pre app restore command"
+	//config.PostAppRestoreCmd = "echo,post app restore command"
+	//config.RestoreCmd = "echo,restore command"
 
 	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, restore.RestoreWorkflow, config, workflowStatus)
 	if err != nil {
